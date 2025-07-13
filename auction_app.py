@@ -1,10 +1,12 @@
 import streamlit as st
 import pandas as pd
 
+st.sidebar.markdown("[🌐 GitHub](https://github.com/deveshc20)  |  🧑‍💻 Created by **DC**")
+
 st.set_page_config(page_title="Cricket Auction App", layout="wide")
 
 # ---------- SIDEBAR NAVIGATION ----------
-st.sidebar.title("🏏 Auction Navigation")
+st.sidebar.title("🏏 Cricket Auction System")
 page = st.sidebar.radio("Go to", ["1️⃣ Upload Players", "2️⃣ Team Setup", "3️⃣ Auction Panel", "4️⃣ Summary & Export"])
 
 # ---------- SESSION INIT ----------
