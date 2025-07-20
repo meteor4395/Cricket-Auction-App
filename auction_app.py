@@ -4,43 +4,51 @@ import openpyxl
 import random
 import base64
 import time
+import os
 
-
+# ---------- SOUND EFFECT ----------
+def play_sound():
+    sound_path = "assets/bell.mp3"
+    if os.path.exists(sound_path):
+        audio_file = open(sound_path, 'rb')
+        audio_bytes = audio_file.read()
+        b64 = base64.b64encode(audio_bytes).decode()
+        sound_html = f"""
+        <audio autoplay>
+            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+        </audio>
+        """
+        st.markdown(sound_html, unsafe_allow_html=True)
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(page_title="Cricket Auction App", layout="wide")
 
-st.sidebar.markdown("[\U0001F310 GitHub](https://github.com/deveshc20)  |  \U0001F9D1‍\U0001F4BB Created by **DC**")
+st.sidebar.markdown("[🌐 GitHub](https://github.com/deveshc20)  |  🧑‍💻 Created by **DC**")
 st.sidebar.title("🏏 Cricket Auction System")
 page = st.sidebar.radio("Go to", ["1️⃣ Upload Players", "2️⃣ Team Setup", "3️⃣ Auction Panel", "4️⃣ Summary & Export"])
 
 # ---------- SESSION INIT ----------
-if 'player_index' not in st.session_state:
-    st.session_state['player_index'] = 0
-if 'teams' not in st.session_state:
-    st.session_state['teams'] = []
-if 'auction_results' not in st.session_state:
-    st.session_state['auction_results'] = []
-if 'players_df' not in st.session_state:
-    st.session_state['players_df'] = None
-if 'current_bid' not in st.session_state:
-    st.session_state['current_bid'] = 20
-if 'current_bid_team' not in st.session_state:
-    st.session_state['current_bid_team'] = None
-if 'start_time' not in st.session_state:
-    st.session_state['start_time'] = None
+defaults = {
+    'player_index': 0,
+    'teams': [],
+    'auction_results': [],
+    'players_df': None,
+    'current_bid': 20,
+    'current_bid_team': None,
+    'start_time': None,
+}
+for key, val in defaults.items():
+    st.session_state.setdefault(key, val)
 
 # ---------- 1️⃣ UPLOAD PLAYERS ----------
 if page == "1️⃣ Upload Players":
     st.title("📅 Upload Player List")
-
     uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx"])
     required_columns = ["Player No", "Player Name", "Role"]
 
     if uploaded_file:
         try:
             df = pd.read_excel(uploaded_file)
-
             if all(col in df.columns for col in required_columns):
                 df['Auctioned'] = False
                 st.session_state['players_df'] = df.copy()
@@ -49,7 +57,6 @@ if page == "1️⃣ Upload Players":
             else:
                 missing = list(set(required_columns) - set(df.columns))
                 st.error(f"Missing columns: {', '.join(missing)}")
-
         except Exception as e:
             st.error(f"Error reading file: {e}")
     else:
@@ -58,7 +65,6 @@ if page == "1️⃣ Upload Players":
 # ---------- 2️⃣ TEAM SETUP ----------
 elif page == "2️⃣ Team Setup":
     st.title("👥 Team Setup")
-
     num_teams = st.number_input("Number of teams", min_value=2, max_value=12, value=4, step=1, key="num_teams")
 
     with st.form("team_setup_form"):
@@ -86,7 +92,7 @@ elif page == "2️⃣ Team Setup":
 elif page == "3️⃣ Auction Panel":
     st.title("🎯 Auction Panel")
 
-    if 'players_df' not in st.session_state or st.session_state['players_df'] is None or st.session_state['players_df'].empty:
+    if not st.session_state['players_df'] is not None:
         st.warning("⚠️ Upload the player list first.")
     else:
         df = st.session_state['players_df']
@@ -136,20 +142,7 @@ elif page == "3️⃣ Auction Panel":
                             })
                             del st.session_state['current_player']
                             st.success(f"🎉 Player sold to {selected_team} for ₹{sold_price}!")
-                            st.markdown(
-    f"""
-    <audio id="bell" autoplay>
-        <source src="data:audio/mp3;base64,{sound_base64}" type="audio/mp3">
-    </audio>
-    <script>
-        var audio = document.getElementById("bell");
-        if (audio) {{
-            audio.play().catch(error => console.log(error));
-        }}
-    </script>
-    """,
-    unsafe_allow_html=True
-)
+                            play_sound()
                         else:
                             st.warning("⚠️ Enter a valid price greater than 0.")
 
@@ -180,7 +173,7 @@ elif page == "3️⃣ Auction Panel":
         st.subheader("📋 Auction Progress")
         st.dataframe(df)
 
-# ---------- 4️⃣ SUMMARY ----------
+# ---------- 4️⃣ SUMMARY & EXPORT ----------
 elif page == "4️⃣ Summary & Export":
     st.title("📊 Auction Summary")
 
@@ -192,17 +185,24 @@ elif page == "4️⃣ Summary & Export":
     st.subheader("📝 Auction Results")
     st.dataframe(df)
 
-    # Export as Excel
     with pd.ExcelWriter("auction_results.xlsx", engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name="Results")
+        for team in st.session_state['teams']:
+            team_name = team['Team']
+            players = team['Players']
+            if players:
+                team_df = pd.DataFrame(players)[['Player No', 'Player Name', 'Role']]
+                team_df['Spent'] = team['Spent']
+                team_df['Remaining Budget'] = team['Budget']
+                team_df.to_excel(writer, index=False, sheet_name=team_name[:31])
 
-with open("auction_results.xlsx", "rb") as f:
-    st.download_button(
-        label="⬇️ Download Excel File",
-        data=f.read(),
-        file_name="auction_results.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    with open("auction_results.xlsx", "rb") as f:
+        st.download_button(
+            label="⬇️ Download Excel File",
+            data=f.read(),
+            file_name="auction_results.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
 
     st.subheader("👥 Team Details")
     for team in st.session_state['teams']:
