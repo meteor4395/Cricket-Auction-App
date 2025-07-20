@@ -5,13 +5,7 @@ import random
 import base64
 import time
 
-# ---------- SOUND EFFECT ----------
-sound_base64 = "SUQzAwAAAAAAIVRBTEIAAAAPAAABAAAAAAAAAAAAAAAAAA=="
-sound_html = f"""
-<audio autoplay>
-    <source src="data:audio/mp3;base64,{sound_base64}" type="audio/mp3">
-</audio>
-"""
+
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(page_title="Cricket Auction App", layout="wide")
@@ -92,7 +86,7 @@ elif page == "2️⃣ Team Setup":
 elif page == "3️⃣ Auction Panel":
     st.title("🎯 Auction Panel")
 
-    if 'players_df' not in st.session_state or st.session_state['players_df'].empty:
+    if 'players_df' not in st.session_state or st.session_state['players_df'] is None or st.session_state['players_df'].empty:
         st.warning("⚠️ Upload the player list first.")
     else:
         df = st.session_state['players_df']
