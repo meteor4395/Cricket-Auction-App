@@ -13,3 +13,5 @@
 *.xlsx
 #previous versions
 auction_app.py
+# devcontainer
+/.devcontainer
