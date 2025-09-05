@@ -1,0 +1,164 @@
+/* ====== Root Theme ====== */
+:root {
+  --bg: #0b1020;
+  --panel: #111835;
+  --panel-2: #0f1630;
+  --accent: #00e0a4;
+  --accent-2: #6ee7ff;
+  --muted: #a6b0cf;
+  --text: #e7ecff;
+  --danger: #ff6b6b;
+  --warning: #ffcf66;
+  --ok: #35d399;
+  --card: #121a3a;
+  --card-2: #0d142b;
+  --ring: rgba(0,224,164,.35);
+}
+
+html, body {
+  background: var(--bg) !important;
+  color: var(--text);
+  font-weight: 400;
+  letter-spacing: .2px;
+}
+
+/* ====== Global polish ====== */
+.block-container {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  max-width: 1250px;
+}
+
+.st-emotion-cache-1dp5vir, /* top toolbar container */
+.stDeployButton { display: none !important; } /* hide deploy badge */
+
+/* ====== Cards & Panels ====== */
+.au-card {
+  background: linear-gradient(180deg, var(--panel), var(--card));
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 16px;
+  padding: 16px;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+}
+.au-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--ring);
+  box-shadow: 0 8px 28px rgba(0,224,164,.08);
+}
+
+.au-panel {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.07);
+  padding: 14px 16px;
+}
+
+/* ====== Sticky page header ====== */
+.au-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(180deg, rgba(11,16,32,.95), rgba(11,16,32,.75));
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 10px 8px 8px 8px;
+  margin: -16px -16px 16px -16px;
+}
+
+/* ====== Buttons ====== */
+.au-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, #0f1a3b, #0c1330);
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: background .15s ease, border-color .15s ease, transform .08s ease;
+}
+.au-btn:hover {
+  border-color: var(--ring);
+  background: linear-gradient(180deg, #132050, #0e1738);
+}
+.au-btn:active {
+  transform: translateY(1px);
+}
+.au-btn--accent {
+  border-color: rgba(0,224,164,.35);
+  box-shadow: inset 0 0 0 1px rgba(0,224,164,.15), 0 6px 22px rgba(0,224,164,.08);
+}
+.au-btn--danger {
+  border-color: rgba(255,80,80,.35);
+  background: linear-gradient(180deg, #2a0f15, #1b0a0f);
+}
+
+/* ====== Pills, badges ====== */
+.au-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: .82rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.08);
+  color: var(--muted);
+  background: linear-gradient(180deg, #101831, #0e142a);
+}
+
+/* ====== Grid helpers ====== */
+.au-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 980px) {
+  .au-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .au-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ====== Player card ====== */
+.player-card {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+.player-photo {
+  width: 110px; height: 110px; border-radius: 14px; object-fit: cover;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 4px 18px rgba(0,0,0,.35);
+}
+.player-meta h4 {
+  margin: 0 0 6px 0; color: var(--text);
+}
+.player-meta .sub { color: var(--muted); font-size: .92rem; }
+
+/* ====== Tables ====== */
+[data-testid="stDataFrame"] {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 6px 22px rgba(0,0,0,.25);
+}
+
+/* ====== Timer ====== */
+.timer {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.1rem;
+  color: var(--accent-2);
+}
+
+/* ====== Checkbox row ====== */
+.team-checks {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.team-pill {
+  border-radius: 12px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(180deg, #0f1736, #0d142c);
+}

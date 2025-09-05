@@ -1,0 +1,15 @@
+#ignore photos
+/photos
+*.jpg
+*.pdf
+*.png
+#ignore database files
+*.db
+#ignore log files
+*.log
+#ignore temporary files
+*.tmp
+#ignore xlsx files
+*.xlsx
+#previous versions
+auction_app.py
